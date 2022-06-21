@@ -1,13 +1,17 @@
-import buildGraph from './lib/buildGraph';
-import Progress from './Progress';
+import { apiClient } from "./module/api";
+import buildGraph from "./lib/buildGraph";
+import Progress from "./Progress";
 
-const queryState = require('query-state');
+const queryState = require("query-state");
 
-const qs = queryState({
-  query: ''
-}, {
-  useSearch: true
-});
+const qs = queryState(
+  {
+    query: ""
+  },
+  {
+    useSearch: true
+  }
+);
 
 let lastBuilder;
 const appStateFromQuery = qs.get();
@@ -17,8 +21,14 @@ const appState = {
   progress: new Progress(),
   graph: null,
   query: appStateFromQuery.query,
-  pattern: appStateFromQuery.pattern || '[query] vs ...'
-}
+  pattern: appStateFromQuery.pattern || "[query] vs ..."
+};
+
+// throws an Error
+apiClient.checkPattern(appState.pattern);
+apiClient.setPattern(appState.pattern);
+
+console.log("apiClient:", apiClient);
 
 if (appState.query) {
   performSearch(appState.query);
@@ -36,16 +46,17 @@ export function performSearch(queryString) {
   appState.hasGraph = true;
   appState.progress.reset();
 
-  qs.set('query', queryString);
+  qs.set("query", queryString);
   if (lastBuilder) {
     lastBuilder.dispose();
   }
 
-  lastBuilder = buildGraph(queryString, appState.pattern, appState.maxDepth, appState.progress);
+  lastBuilder = buildGraph(queryString, appState.maxDepth, appState.progress);
+
   appState.graph = Object.freeze(lastBuilder.graph);
   return lastBuilder.graph;
 }
 
 export function resolveQueryFromLink(from, to) {
-  return appState.pattern.replace('[query]', from).replace('...', to);
+  return appState.pattern.replace("[query]", from).replace("...", to);
 }

@@ -33,7 +33,7 @@
 import appState, {performSearch, resolveQueryFromLink} from './appState.js';
 import createRenderer from './lib/createRenderer';
 import About from './components/About';
-import QueryInput from './components/QueryInput';
+import QueryInput from './module/QueryInput';
 import bus from './bus'
 
 export default {
@@ -146,7 +146,7 @@ path.hovered {
 a {
   &:hover, &:focus {
     color: highlight-color;
-    border-bottom: 1px dashed;  
+    border-bottom: 1px dashed;
   }
 }
 .search-submit {
@@ -253,7 +253,7 @@ a {
 @media (max-height: 550px) {
   .search-box {
     height: 32px;
-    input.search-input {  
+    input.search-input {
       font-size: 16px;
     }
 
